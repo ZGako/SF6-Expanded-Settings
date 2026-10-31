@@ -20,9 +20,22 @@ public class ExpandedSettings
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static void InitializePlugin()
     {
+        API.LogInfo("Loading ExtendedSettings C# plugin...");
         CoreLifecycle.OnCoreUnloading += PluginExitPoint;
 
-        GameSingletonManager.RegisterOptionManager(AntiAliasing.Init, AntiAliasing.Unload);
+        GameSingletonManager.RegisterOptionManager(InitializeExtraSettings, UnloadExtraSettings);
+    }
+
+    private static void InitializeExtraSettings()
+    {
+        AntiAliasing.Init();
+        RenderScale.Init();
+    }
+
+    private static void UnloadExtraSettings()
+    {
+        AntiAliasing.Unload();
+        RenderScale.Unload();
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -30,8 +43,9 @@ public class ExpandedSettings
     {
         // Unsubscribe from Core events/singletons so Core holds zero references to this assembly
         CoreLifecycle.OnCoreUnloading -= PluginExitPoint;
+        API.LogInfo("Unloading ExtendedSettings C# plugin...");
 
-        AntiAliasing.Unload();
+        UnloadExtraSettings();
     }
 
     /// Default plugin entry and exit points
