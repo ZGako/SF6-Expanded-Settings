@@ -9,11 +9,11 @@ global using REFrameworkNET.Callbacks;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
+using SF6_EXS.Settings;
 using SF6_Plugin_Core;
 using SF6_Plugin_Core.Services;
 
 namespace SF6_EXS;
-
 
 public class ExpandedSettings
 {
@@ -21,13 +21,17 @@ public class ExpandedSettings
     private static void InitializePlugin()
     {
         CoreLifecycle.OnCoreUnloading += PluginExitPoint;
+
+        GameSingletonManager.RegisterOptionManager(AntiAliasing.Init, AntiAliasing.Unload);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static void UnloadPlugin()
+    private static void UnloadPlugin()
     {
         // Unsubscribe from Core events/singletons so Core holds zero references to this assembly
         CoreLifecycle.OnCoreUnloading -= PluginExitPoint;
+
+        AntiAliasing.Unload();
     }
 
     /// Default plugin entry and exit points
