@@ -3,7 +3,6 @@ using SF6_Plugin_Core.UI.Localization;
 using SF6_Plugin_Core.UI.OptionsSettings.Core;
 using SF6_Plugin_Core.UI.OptionsSettings.CustomOptions;
 using SF6_Plugin_Core.UI.OptionsSettings.Requests;
-using via.render;
 
 namespace SF6_EXS.Settings;
 
@@ -119,24 +118,22 @@ public static class RenderScale
         var imageQualityRateNode = new UICustomOptionsValueNode(IQR_SLIDER, new SliderOptionInitializer(
             iqrMessage,
             iqrDescription,
-            1, 300, (int)(Renderer.RenderConfig.ImageQualityRate * 100), 125
+            1, 300, (int)(via.render.Renderer.RenderConfig.ImageQualityRate * 100), 125
         ));
         imageQualityRateNode.AddHook(
-            new OnDisableReasonHookRequest(() => Renderer.RenderConfig.UpscaleType != FFX.UpscaleType.None));
+            new OnDisableReasonHookRequest(() =>
+                via.render.Renderer.RenderConfig.UpscaleType != via.render.FFX.UpscaleType.None));
 
         imageQualityRateNode.AddHook(new OnValueTypeEventHookRequest((_, value, _) =>
         {
-            Renderer.RenderConfig.ImageQualityRate = value / 100.0f;
+            via.render.Renderer.RenderConfig.ImageQualityRate = value / 100.0f;
         }));
 
         var appendReq = new OptionsAppendElementsRequest([(0, imageQualityRateNode)]);
 
         try
         {
-            OptionsSettingsManager.ModifyUI(() =>
-            {
-                OptionsSettingsManager.RegisterModification([(int)app.Option.TabType.Graphic, 6], appendReq);
-            });
+            OptionsSettingsManager.RegisterModification([(int)app.Option.TabType.Graphic, 6], appendReq);
         }
         catch (Exception ex)
         {
@@ -150,10 +147,8 @@ public static class RenderScale
     {
         try
         {
-            OptionsSettingsManager.ModifyUI(() =>
-            {
-                foreach (var mod in _modificationRequests) OptionsSettingsManager.UnregisterModification(mod);
-            });
+            foreach (var mod in _modificationRequests) OptionsSettingsManager.UnregisterModification(mod);
+
             _modificationRequests.Clear();
         }
         catch (Exception ex)

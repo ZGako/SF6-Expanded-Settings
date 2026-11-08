@@ -73,11 +73,8 @@ public static class AntiAliasing
 
         try
         {
-            OptionsSettingsManager.ModifyUI(() =>
-            {
-                OptionsSettingsManager.RegisterModification([(int)app.Option.TabType.Graphic, 5], eliminRequest);
-                OptionsSettingsManager.RegisterModification([(int)app.Option.TabType.Graphic, 5], appendReq);
-            });
+            OptionsSettingsManager.RegisterModification([(int)app.Option.TabType.Graphic, 5], eliminRequest);
+            OptionsSettingsManager.RegisterModification([(int)app.Option.TabType.Graphic, 5], appendReq);
         }
         catch (Exception ex)
         {
@@ -92,10 +89,8 @@ public static class AntiAliasing
     {
         try
         {
-            OptionsSettingsManager.ModifyUI(() =>
-            {
-                foreach (var mod in _modificationRequests) OptionsSettingsManager.UnregisterModification(mod);
-            });
+            foreach (var mod in _modificationRequests) OptionsSettingsManager.UnregisterModification(mod);
+
             _modificationRequests.Clear();
         }
         catch (Exception ex)
